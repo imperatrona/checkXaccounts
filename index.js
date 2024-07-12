@@ -2,25 +2,32 @@
 // username:password:email:email_password:auth_token
 // will save output.csv with columns auth_token,csrf_token
 
-const input_file = (await Bun.file("input.txt").text()).split("\n");
+import { readFileSync, writeFileSync } from "node:fs";
 
-const input = input_file.map((item) => {
-	const [username, password, email, email_password, token] = item.split(":");
-
-	return {
-		username,
-		password,
-		email,
-		email_password,
-		token,
-	};
+const input_file = readFileSync("./input.txt", {
+	encoding: "utf8",
 });
+
+const input = input_file
+	.split("\n")
+	.filter((row) => row !== "")
+	.map((item) => {
+		const [username, password, email, email_password, token] = item.split(":");
+
+		return {
+			username,
+			password,
+			email,
+			email_password,
+			token,
+		};
+	});
 
 let result = "auth_token,csrf_token\n";
 let total = 0;
 
 for (const account of input) {
-	const w = await new Promise((resolve) => setTimeout(resolve, 2000));
+	await new Promise((resolve) => setTimeout(resolve, 1000));
 	const { username, token } = account;
 
 	if (!token) {
@@ -77,5 +84,8 @@ for (const account of input) {
 		}
 	}
 }
+
 console.log(`Total working accounts ${total}`);
-await Bun.write("output.csv", result);
+writeFileSync("./output.csv", result, {
+	encoding: "utf8",
+});
