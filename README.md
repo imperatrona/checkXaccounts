@@ -4,7 +4,7 @@ Save accounts to input.txt file each account on new line in format:
 ```
 username:password:email:email_password:auth_token
 ```
-
+Run: 
 ```bash
 bun run index.ts
 ```
